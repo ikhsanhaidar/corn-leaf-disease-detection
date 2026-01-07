@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriScan AI - Sistem Hybrid Deteksi Penyakit Daun Jagung</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <span>AgriScan<span class="logo-accent">AI</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">Cara Kerja</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Fitur</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">Tentang</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <span class="hero-badge animate__animated animate__fadeIn">
+                        <i class="fas fa-cogs me-2"></i> Hybrid AI + Sistem Pakar
+                    </span>
+                    <h1 class="animate__animated animate__fadeInUp">
+                        Deteksi Penyakit Jagung dengan <br>
+                        <span class="hero-accent">Kecerdasan Hibrida</span>
+                    </h1>
+                    <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
+                        Menggabungkan Deep Learning CNN dengan logika sistem pakar untuk akurasi maksimal
+                    </p>
+                    <a href="#upload" class="btn btn-lg hero-btn animate__animated animate__fadeInUp animate__delay-2s">
+                        <i class="fas fa-play-circle me-2"></i> Mulai Analisis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="upload-section container" id="upload">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="upload-card animate__animated animate__fadeIn">
+                    <div class="text-center mb-5">
+                        <h2 class="mb-3">Analisis Gambar Daun Jagung</h2>
+                        <p class="section-subtitle">Unggah gambar dan berikan informasi lingkungan untuk analisis yang lebih akurat</p>
+                    </div>
+                    
+                    <form action="/" method="post" enctype="multipart/form-data" id="uploadForm">
+                        <!-- File Upload -->
+                        <div class="upload-area mb-5" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>Unggah Gambar</h4>
+                            <p class="upload-hint mb-3">Klik atau tarik file ke area ini</p>
+                            <div class="upload-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Format: JPG, PNG, JPEG | Maks: 5MB
+                            </div>
+                            <input type="file" name="file" id="fileInput" accept="image/*" 
+                                   class="d-none" onchange="previewImage(event)" required>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div class="text-center mb-5" id="previewContainer" style="display: none;">
+                            <h5 class="mb-3">Pratinjau Gambar</h5>
+                            <img id="preview" src="#" alt="Preview" class="preview-image">
+                        </div>
+                        
+                        <!-- Environmental Inputs -->
+                        <div class="mb-5">
+                            <h4 class="mb-4 text-center">
+                                <i class="fas fa-chart-line me-2"></i> Data Lingkungan
+                            </h4>
+                            <div class="env-inputs-grid">
+                                {% for input in [
+                                    {'icon': 'tint', 'label': 'Kelembaban', 'name': 'humidity', 
+                                     'options': [('rendah', 'Rendah (< 60%)'), ('sedang', 'Sedang (60-80%)'), ('tinggi', 'Tinggi (> 80%)')]},
+                                    {'icon': 'cloud-sun', 'label': 'Musim', 'name': 'season',
+                                     'options': [('kemarau', 'Kemarau'), ('peralihan', 'Peralihan'), ('hujan', 'Hujan')]},
+                                    {'icon': 'thermometer-half', 'label': 'Suhu', 'name': 'temperature',
+                                     'options': [('rendah', 'Rendah (< 25°C)'), ('normal', 'Normal (25-30°C)'), ('tinggi', 'Tinggi (> 30°C)')]},
+                                    {'icon': 'calendar-alt', 'label': 'Umur Tanaman', 'name': 'plant_age',
+                                     'options': [('<30', 'Muda (< 30 hari)'), ('30-60', 'Menengah (30-60 hari)'), ('>60', 'Tua (> 60 hari)')]}
+                                ] %}
+                                <div class="env-input-card">
+                                    <i class="fas fa-{{ input.icon }}"></i>
+                                    <label class="env-input-label">{{ input.label }}</label>
+                                    <select class="form-select" name="{{ input.name }}" required>
+                                        {% for value, text in input.options %}
+                                        <option value="{{ value }}" {% if loop.index == 2 %}selected{% endif %}>{{ text }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn upload-btn btn-lg" onclick="showLoading()">
+                                <i class="fas fa-search me-2"></i> Jalankan Analisis Hybrid
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Architecture -->
+    <section class="container mt-5" id="how-it-works">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Arsitektur Sistem Hybrid</h2>
+                    <p class="section-subtitle">Cara kerja sistem kombinasi AI dan sistem pakar</p>
+                </div>
+                
+                <div class="system-flow">
+                    {% for step in [
+                        {'icon': 'image', 'title': 'Input Gambar', 'desc': 'Unggah gambar daun jagung'},
+                        {'icon': 'network-wired', 'title': 'CNN Analysis', 'desc': 'Deteksi pola visual dengan Deep Learning'},
+                        {'icon': 'brain', 'title': 'Expert Rules', 'desc': 'Terapkan logika sistem pakar'},
+                        {'icon': 'chart-pie', 'title': 'Hasil Hybrid', 'desc': 'Hasil akhir dengan akurasi optimal'}
+                    ] %}
+                    <div class="flow-step">
+                        <i class="fas fa-{{ step.icon }}"></i>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="row text-center mt-4">
+                    {% for step in [
+                        {'icon': 'image', 'title': 'Input Gambar', 'desc': 'Unggah gambar daun jagung'},
+                        {'icon': 'network-wired', 'title': 'CNN Analysis', 'desc': 'Deteksi pola visual dengan Deep Learning'},
+                        {'icon': 'brain', 'title': 'Expert Rules', 'desc': 'Terapkan logika sistem pakar'},
+                        {'icon': 'chart-pie', 'title': 'Hasil Hybrid', 'desc': 'Hasil akhir dengan akurasi optimal'}
+                    ] %}
+                    <div class="col-md-3">
+                        <h6>{{ step.title }}</h6>
+                        <p class="step-description">{{ step.desc }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    {% if image_path %}
+    <section class="container results-section animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="results-card">
+                    <div class="row align-items-center mb-5">
+                        <div class="col-md-6">
+                            <h3 class="mb-4">Hasil Analisis Hybrid</h3>
+                            <div class="mb-4">
+                                <span class="disease-badge {% if predicted_label == 'Sehat' %}healthy{% endif %}">
+                                    <i class="fas fa-{% if predicted_label == 'Sehat' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
+                                    {{ predicted_label }}
+                                </span>
+                            </div>
+                            
+                            <div class="alert alert-{% if predicted_label == 'Sehat' %}success{% else %}warning{% endif %}">
+                                <i class="fas fa-{% if predicted_label == 'Sehat' %}leaf{% else %}bug{% endif %} me-2"></i>
+                                <strong>Rekomendasi:</strong> 
+                                {{ 'Tanaman dalam kondisi sehat' if predicted_label == 'Sehat' else 'Perlu penanganan segera' }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <h6 class="mb-3">Gambar yang Dianalisis</h6>
+                                <img src="{{ image_path }}" alt="Analysed Image" class="result-image mb-3">
+                                <div class="result-actions">
+                                    <a href="/" class="btn btn-outline-primary">
+                                        <i class="fas fa-redo me-2"></i> Analisis Baru
+                                    </a>
+                                    <button class="btn btn-outline-success" onclick="downloadResults()">
+                                        <i class="fas fa-download me-2"></i> Simpan Laporan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confidence Visualization -->
+                    <div class="confidence-viz">
+                        <h5 class="mb-4">
+                            <i class="fas fa-chart-line me-2"></i> Visualisasi Kepercayaan Sistem
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>CNN Confidence</h6>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill cnn-fill" 
+                                         style="width: {{ cnn_confidence|default(0) }}%"></div>
+                                </div>
+                                <div class="confidence-labels">
+                                    <small>0%</small>
+                                    <strong>{{ cnn_confidence|default(0)|round(2) }}%</strong>
+                                    <small>100%</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Hybrid Confidence</h6>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill hybrid-fill" 
+                                         style="width: {{ probability|default(0) }}%"></div>
+                                </div>
+                                <div class="confidence-labels">
+                                    <small>0%</small>
+                                    <strong>{{ probability|default(0)|round(2) }}%</strong>
+                                    <small>100%</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if modifier %}
+                        <div class="mt-4 text-center">
+                            <span class="badge adjustment-badge">
+                                <i class="fas fa-adjust me-1"></i>
+                                Penyesuaian Sistem Pakar: {{ modifier|round(2) }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Probabilities -->
+                    <div class="mt-5">
+                        <h5 class="mb-4">
+                            <i class="fas fa-chart-bar me-2"></i> Probabilitas Penyakit
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% if probabilities_dict %}
+                                    {% for label, prob in probabilities_dict.items() %}
+                                    <div class="probability-item">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <div>
+                                                <i class="fas fa-{% if label == predicted_label %}circle{% else %}dot-circle{% endif %} me-2 
+                                                    {% if label == predicted_label %}text-success{% else %}text-muted{% endif %}"></i>
+                                                <strong {% if label == predicted_label %}class="text-success"{% endif %}>{{ label }}</strong>
+                                            </div>
+                                            <div>
+                                                <span class="badge {% if label == predicted_label %}bg-success{% else %}bg-secondary{% endif %}">
+                                                    {{ prob|default(0)|round(2) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" 
+                                                 style="width: {{ prob|default(0) }}%; 
+                                                        {% if label == predicted_label %}background-color: var(--primary);{% endif %}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="expert-analysis">
+                                    <h6><i class="fas fa-info-circle me-2"></i> Analisis Sistem Pakar</h6>
+                                    {% if explanation %}
+                                        <ul class="expert-list">
+                                            {% for item in explanation.split(';') %}
+                                                {% if item.strip() %}
+                                                    <li>{{ item.strip() }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="no-analysis">Tidak ada penyesuaian dari sistem pakar.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Visualization -->
+                    <div class="mt-5">
+                        <h5 class="mb-4">
+                            <i class="fas fa-chart-pie me-2"></i> Visualisasi Grafik
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="probabilityChart" height="250"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="confidenceChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h4 class="mt-4">Menganalisis dengan Sistem Hybrid...</h4>
+            <p class="loading-text">Menggabungkan CNN dan sistem pakar</p>
+            <div class="progress mt-3">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- Chart Initialization (Template-specific) -->
+    <script>
+        {% if image_path and probabilities_dict %}
+        document.addEventListener('DOMContentLoaded', function() {
+            // Probability Chart
+            const probCtx = document.getElementById('probabilityChart').getContext('2d');
+            const probChart = new Chart(probCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ probabilities_dict.keys()|list|tojson }},
+                    datasets: [{
+                        data: {{ probabilities_dict.values()|list|tojson }},
+                        backgroundColor: [
+                            '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribusi Probabilitas'
+                        }
+                    }
+                }
+            });
+            
+            // Confidence Chart
+            const confCtx = document.getElementById('confidenceChart').getContext('2d');
+            const confChart = new Chart(confCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CNN', 'Expert Rules', 'Hybrid'],
+                    datasets: [{
+                        label: 'Confidence Level',
+                        data: [
+                            {{ cnn_confidence|default(0) }},
+                            {{ expert_conf|default(cnn_confidence|default(0)) }},
+                            {{ probability|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(33, 150, 243, 0.7)',
+                            'rgba(255, 152, 0, 0.7)',
+                            'rgba(76, 175, 80, 0.7)'
+                        ],
+                        borderColor: [
+                            '#2196F3',
+                            '#FF9800',
+                            '#4CAF50'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Persentase (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Perbandingan Kepercayaan Sistem'
+                        }
+                    }
+                }
+            });
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Dataset & Model
+Dataset/
+Model/
+*.h5
+*.keras
+
+# Uploads (opsional, tergantung kebutuhan)
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
