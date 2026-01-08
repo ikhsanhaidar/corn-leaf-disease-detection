@@ -980,50 +980,388 @@ img {
 /* ============================================
    CONFIDENCE VISUALIZATION
    ============================================ */
-.confidence-viz {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: var(--radius-lg);
+/* Results Section Styling */
+.results-card {
+    background: white;
+    border-radius: 15px;
     padding: 30px;
-    margin: 30px 0;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eaeaea;
 }
 
-.confidence-meter {
-    height: 20px;
-    background: rgba(0, 0, 0, 0.1);
+.section-header {
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 15px;
+}
+
+.section-subtitle {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Diagnosis Summary */
+.diagnosis-summary {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.disease-badge-large {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: white;
     border-radius: 10px;
-    overflow: hidden;
-    margin: 15px 0;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.disease-badge-large:hover {
+    transform: translateY(-3px);
+}
+
+.disease-badge-large.healthy {
+    border-left-color: #28a745;
+}
+
+.disease-badge-large i {
+    color: var(--primary);
+}
+
+.disease-badge-large.healthy i {
+    color: #28a745;
+}
+
+.quick-stats {
+    margin-top: 20px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card h6 {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Image Preview */
+.image-preview-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.image-container {
     position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 3px solid white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.preview-image-large {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.preview-image-large:hover {
+    transform: scale(1.02);
+}
+
+.image-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Confidence Visualization */
+.confidence-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.confidence-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eaeaea;
+}
+
+.confidence-meter-lg {
+    position: relative;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 .confidence-fill {
     height: 100%;
-    border-radius: 10px;
-    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 15px;
+    transition: width 1s ease-in-out;
     position: relative;
-    overflow: hidden;
 }
 
-.confidence-fill.cnn-fill {
-    background: linear-gradient(90deg, var(--info), #64B5F6);
+.cnn-fill {
+    background: linear-gradient(90deg, #2196F3, #64b5f6);
 }
 
-.confidence-fill.hybrid-fill {
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+.hybrid-fill {
+    background: linear-gradient(90deg, #4CAF50, #81c784);
 }
 
-.confidence-fill::after {
-    content: '';
+.confidence-percentage {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.3) 50%, 
-        transparent 100%);
-    animation: shimmer 2s infinite;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.adjustment-badge {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+    color: white;
+}
+
+/* Probabilities & Expert Analysis */
+.probabilities-card,
+.expert-analysis-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #eaeaea;
+    height: 100%;
+}
+
+.probability-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.probability-indicator.active {
+    background: var(--primary-light);
+}
+
+.probability-indicator i {
+    font-size: 0.8rem;
+}
+
+.probability-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.expert-analysis-content {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.expert-point {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 0.95rem;
+}
+
+.expert-point:last-child {
+    border-bottom: none;
+}
+
+/* Charts Section */
+.charts-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.chart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eaeaea;
+}
+
+/* IPM Recommendations */
+.recommendations-section {
+    background: linear-gradient(135deg, #f0f7ff 0%, #f8f9fa 100%);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.urgency-display .alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.principle-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.principle-card:hover {
+    transform: translateY(-5px);
+}
+
+.principle-icon {
+    font-size: 2rem;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.principle-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Actions Card */
+.actions-card,
+.environment-card {
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.actions-card .card-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+}
+
+.environment-card .card-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+}
+
+.actions-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.action-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.action-number {
+    background: var(--primary);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.action-content {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.environment-notes .note-item {
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 3px solid #17a2b8;
+}
+
+.follow-up-advice .alert {
+    background: white;
+    border-left: 4px solid #28a745;
+}
+
+/* Scrollbar Styling */
+.actions-list::-webkit-scrollbar,
+.expert-analysis-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.actions-list::-webkit-scrollbar-track,
+.expert-analysis-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.actions-list::-webkit-scrollbar-thumb,
+.expert-analysis-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .results-card {
+        padding: 20px;
+    }
+    
+    .disease-badge-large {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .disease-badge-large i {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    
+    .image-actions {
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        margin-bottom: 15px;
+    }
+    
+    .principle-card {
+        margin-bottom: 15px;
+    }
 }
 
 @keyframes shimmer {

@@ -151,6 +151,45 @@ function downloadResults() {
     }, 500);
 }
 
+// Toggle charts visibility
+function toggleCharts() {
+    const chartsSection = document.getElementById('chartsSection');
+    const toggle = document.getElementById('chartToggle');
+    
+    if (toggle.checked) {
+        chartsSection.style.display = 'block';
+        chartsSection.style.animation = 'fadeIn 0.5s ease';
+    } else {
+        chartsSection.style.display = 'none';
+    }
+}
+
+// Toggle image info
+function toggleImageInfo() {
+    alert('Informasi Gambar:\n\n- Format: ' + imagePath.split('.').pop().toUpperCase() + 
+          '\n- Tanggal Analisis: ' + new Date().toLocaleDateString('id-ID') +
+          '\n- Ukuran: Asli dari upload user' +
+          '\n- Resolusi: 256x256 pixels (resized untuk analisis)');
+}
+
+// Download results
+function downloadResults() {
+    alert('Fitur ekspor laporan akan segera tersedia!\n\nFitur ini akan meng-generate PDF laporan lengkap hasil analisis.');
+}
+
+// Animation for elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate confidence bars
+    const confidenceBars = document.querySelectorAll('.confidence-fill');
+    confidenceBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 300);
+    });
+});
+
 // ============================================
 // Smooth Scrolling
 // ============================================

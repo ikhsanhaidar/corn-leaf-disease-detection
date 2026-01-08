@@ -180,81 +180,135 @@
         </div>
     </section>
 
-    <!-- Results Section -->
+        <!-- Results Section -->
     {% if image_path %}
     <section class="container results-section animate__animated animate__fadeIn">
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="results-card">
+                    <!-- Header Section -->
+                    <div class="text-center mb-5">
+                        <h2 class="mb-3">Hasil Analisis Hybrid</h2>
+                        <p class="section-subtitle">Kombinasi Deep Learning CNN dan Sistem Pakar</p>
+                    </div>
+
+                    <!-- Diagnosis Overview -->
                     <div class="row align-items-center mb-5">
                         <div class="col-md-6">
-                            <h3 class="mb-4">Hasil Analisis Hybrid</h3>
-                            <div class="mb-4">
-                                <span class="disease-badge {% if predicted_label == 'Sehat' %}healthy{% endif %}">
-                                    <i class="fas fa-{% if predicted_label == 'Sehat' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
-                                    {{ predicted_label }}
-                                </span>
-                            </div>
-                            
-                            <div class="alert alert-{% if predicted_label == 'Sehat' %}success{% else %}warning{% endif %}">
-                                <i class="fas fa-{% if predicted_label == 'Sehat' %}leaf{% else %}bug{% endif %} me-2"></i>
-                                <strong>Rekomendasi:</strong> 
-                                {{ 'Tanaman dalam kondisi sehat' if predicted_label == 'Sehat' else 'Perlu penanganan segera' }}
+                            <div class="diagnosis-summary">
+                                <!-- Disease Classification -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Klasifikasi Penyakit</h5>
+                                    <div class="disease-badge-large {% if predicted_label == 'Sehat' %}healthy{% endif %}">
+                                        <i class="fas fa-{% if predicted_label == 'Sehat' %}check-circle{% else %}exclamation-triangle{% endif %} fa-2x me-3"></i>
+                                        <div>
+                                            <h4 class="mb-1">{{ predicted_label }}</h4>
+                                            <p class="mb-0 text-muted">
+                                                {% if predicted_label == 'Sehat' %}
+                                                    Tanaman dalam kondisi optimal
+                                                {% else %}
+                                                    Terdeteksi gejala penyakit
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Stats -->
+                                <div class="quick-stats">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="stat-card">
+                                                <h6>Confidence CNN</h6>
+                                                <div class="stat-value">{{ cnn_confidence|default(0)|round(2) }}%</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-card">
+                                                <h6>Confidence Hybrid</h6>
+                                                <div class="stat-value">{{ probability|default(0)|round(2) }}%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="mt-4">
+                                    <div class="alert alert-{% if predicted_label == 'Sehat' %}success{% else %}warning{% endif %}">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-{% if predicted_label == 'Sehat' %}leaf{% else %}bug{% endif %} fa-2x me-3"></i>
+                                            <div>
+                                                <strong>Status: </strong>
+                                                {% if predicted_label == 'Sehat' %}
+                                                    Tanaman dalam kondisi sehat
+                                                {% else %}
+                                                    Perlu penanganan segera
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
+
+                        <!-- Image Preview -->
                         <div class="col-md-6">
-                            <div class="text-center">
-                                <h6 class="mb-3">Gambar yang Dianalisis</h6>
-                                <img src="{{ image_path }}" alt="Analysed Image" class="result-image mb-3">
-                                <div class="result-actions">
-                                    <a href="/" class="btn btn-outline-primary">
+                            <div class="image-preview-card">
+                                <h5 class="text-center mb-3">Gambar yang Dianalisis</h5>
+                                <div class="image-container">
+                                    <img src="{{ image_path }}" alt="Analysed Image" class="preview-image-large">
+                                </div>
+                                <div class="image-actions mt-3">
+                                    <a href="/" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-redo me-2"></i> Analisis Baru
                                     </a>
-                                    <button class="btn btn-outline-success" onclick="downloadResults()">
+                                    <button class="btn btn-outline-success btn-sm" onclick="downloadResults()">
                                         <i class="fas fa-download me-2"></i> Simpan Laporan
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" onclick="toggleImageInfo()">
+                                        <i class="fas fa-info-circle me-2"></i> Info
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Confidence Visualization -->
-                    <div class="confidence-viz">
+                    <div class="confidence-section mb-5">
                         <h5 class="mb-4">
                             <i class="fas fa-chart-line me-2"></i> Visualisasi Kepercayaan Sistem
                         </h5>
                         
                         <div class="row">
                             <div class="col-md-6">
-                                <h6>CNN Confidence</h6>
-                                <div class="confidence-meter">
-                                    <div class="confidence-fill cnn-fill" 
-                                         style="width: {{ cnn_confidence|default(0) }}%"></div>
-                                </div>
-                                <div class="confidence-labels">
-                                    <small>0%</small>
-                                    <strong>{{ cnn_confidence|default(0)|round(2) }}%</strong>
-                                    <small>100%</small>
+                                <div class="confidence-card">
+                                    <h6>CNN Confidence</h6>
+                                    <div class="confidence-meter-lg mb-2">
+                                        <div class="confidence-fill cnn-fill" 
+                                            style="width: {{ cnn_confidence|default(0) }}%">
+                                            <span class="confidence-percentage">{{ cnn_confidence|default(0)|round(2) }}%</span>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Kepercayaan berdasarkan model CNN</small>
                                 </div>
                             </div>
                             
                             <div class="col-md-6">
-                                <h6>Hybrid Confidence</h6>
-                                <div class="confidence-meter">
-                                    <div class="confidence-fill hybrid-fill" 
-                                         style="width: {{ probability|default(0) }}%"></div>
-                                </div>
-                                <div class="confidence-labels">
-                                    <small>0%</small>
-                                    <strong>{{ probability|default(0)|round(2) }}%</strong>
-                                    <small>100%</small>
+                                <div class="confidence-card">
+                                    <h6>Hybrid Confidence</h6>
+                                    <div class="confidence-meter-lg mb-2">
+                                        <div class="confidence-fill hybrid-fill" 
+                                            style="width: {{ probability|default(0) }}%">
+                                            <span class="confidence-percentage">{{ probability|default(0)|round(2) }}%</span>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Kepercayaan setelah sistem pakar</small>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {% if modifier %}
-                        <div class="mt-4 text-center">
+                        <div class="text-center mt-3">
                             <span class="badge adjustment-badge">
                                 <i class="fas fa-adjust me-1"></i>
                                 Penyesuaian Sistem Pakar: {{ modifier|round(2) }}%
@@ -262,71 +316,228 @@
                         </div>
                         {% endif %}
                     </div>
-                    
-                    <!-- Probabilities -->
-                    <div class="mt-5">
-                        <h5 class="mb-4">
-                            <i class="fas fa-chart-bar me-2"></i> Probabilitas Penyakit
-                        </h5>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
+
+                    <!-- Probabilities & Expert Analysis -->
+                    <div class="row mb-5">
+                        <!-- Probabilities -->
+                        <div class="col-md-6">
+                            <div class="probabilities-card">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-chart-bar me-2"></i> Probabilitas Penyakit
+                                </h5>
+                                
                                 {% if probabilities_dict %}
                                     {% for label, prob in probabilities_dict.items() %}
-                                    <div class="probability-item">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <div>
-                                                <i class="fas fa-{% if label == predicted_label %}circle{% else %}dot-circle{% endif %} me-2 
-                                                    {% if label == predicted_label %}text-success{% else %}text-muted{% endif %}"></i>
-                                                <strong {% if label == predicted_label %}class="text-success"{% endif %}>{{ label }}</strong>
-                                            </div>
-                                            <div>
-                                                <span class="badge {% if label == predicted_label %}bg-success{% else %}bg-secondary{% endif %}">
-                                                    {{ prob|default(0)|round(2) }}%
+                                    <div class="probability-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="probability-indicator 
+                                                    {% if label == predicted_label %}active{% endif %}">
+                                                    <i class="fas fa-{% if label == predicted_label %}circle{% else %}dot-circle{% endif %}"></i>
+                                                </div>
+                                                <span class="ms-2 {% if label == predicted_label %}fw-bold{% endif %}">
+                                                    {{ label }}
                                                 </span>
+                                            </div>
+                                            <div class="probability-value">
+                                                {{ prob|default(0)|round(2) }}%
                                             </div>
                                         </div>
                                         <div class="progress">
-                                            <div class="progress-bar" 
-                                                 style="width: {{ prob|default(0) }}%; 
-                                                        {% if label == predicted_label %}background-color: var(--primary);{% endif %}">
+                                            <div class="progress-bar 
+                                                {% if label == predicted_label %}bg-primary{% else %}bg-secondary{% endif %}" 
+                                                style="width: {{ prob|default(0) }}%"
+                                                role="progressbar">
                                             </div>
                                         </div>
                                     </div>
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="expert-analysis">
-                                    <h6><i class="fas fa-info-circle me-2"></i> Analisis Sistem Pakar</h6>
-                                    {% if explanation %}
-                                        <ul class="expert-list">
-                                            {% for item in explanation.split(';') %}
-                                                {% if item.strip() %}
-                                                    <li>{{ item.strip() }}</li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        <p class="no-analysis">Tidak ada penyesuaian dari sistem pakar.</p>
-                                    {% endif %}
+                        </div>
+
+                        <!-- Expert Analysis -->
+                        <div class="col-md-6">
+                            <div class="expert-analysis-card">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-brain me-2"></i> Analisis Sistem Pakar
+                                </h5>
+                                
+                                {% if explanation %}
+                                    <div class="expert-analysis-content">
+                                        {% for item in explanation.split('. ') %}
+                                            {% if item.strip() %}
+                                            <div class="expert-point">
+                                                <i class="fas fa-chevron-right text-primary me-2"></i>
+                                                {{ item.strip() }}
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-light">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Tidak ada penyesuaian dari sistem pakar.
+                                    </div>
+                                {% endif %}
+
+                                <!-- Chart Toggle -->
+                                <div class="mt-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="chartToggle" checked 
+                                            onclick="toggleCharts()">
+                                        <label class="form-check-label" for="chartToggle">
+                                            Tampilkan Visualisasi Grafik
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Chart Visualization -->
-                    <div class="mt-5">
+                    <div class="charts-section mb-5" id="chartsSection">
                         <h5 class="mb-4">
                             <i class="fas fa-chart-pie me-2"></i> Visualisasi Grafik
                         </h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <canvas id="probabilityChart" height="250"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="probabilityChart" height="250"></canvas>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <canvas id="confidenceChart" height="250"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="confidenceChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IPM Recommendations -->
+                    <div class="recommendations-section">
+                        <div class="section-header mb-4">
+                            <h4>
+                                <i class="fas fa-clipboard-check me-2"></i> 
+                                Rekomendasi Penanganan Berbasis IPM
+                            </h4>
+                            <p class="section-subtitle">Integrated Pest Management - Pendekatan Terpadu</p>
+                        </div>
+
+                        <!-- Urgency Level -->
+                        <div class="urgency-display mb-4">
+                            <div class="alert 
+                                {% if urgency_level == 'Tinggi' %}alert-danger
+                                {% elif urgency_level == 'Sedang' %}alert-warning
+                                {% else %}alert-info{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Tingkat Urgensi: {{ urgency_level }}</h5>
+                                        <p class="mb-0">{{ urgency_description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IPM Principles -->
+                        <div class="ipm-principles mb-5">
+                            <h6 class="mb-3">
+                                <i class="fas fa-seedling me-2"></i> Prinsip IPM yang Diterapkan
+                            </h6>
+                            <div class="row g-3">
+                                {% for principle in ipm_principles %}
+                                <div class="col-md-3">
+                                    <div class="principle-card">
+                                        <div class="principle-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="principle-text">
+                                            {{ principle }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Actions & Environment -->
+                        <div class="row mb-5">
+                            <!-- Actions List -->
+                            <div class="col-md-6">
+                                <div class="actions-card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-tasks me-2"></i> Langkah-langkah Penanganan
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="actions-list">
+                                            {% for action in actions %}
+                                            <div class="action-item">
+                                                <div class="action-number">{{ loop.index }}</div>
+                                                <div class="action-content">{{ action }}</div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Environmental Notes -->
+                            <div class="col-md-6">
+                                <div class="environment-card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-cloud-sun me-2"></i> Catatan Kondisi Lingkungan
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if environmental_notes %}
+                                            <div class="environment-notes">
+                                                {% for note in environmental_notes %}
+                                                <div class="note-item">
+                                                    <i class="fas fa-info-circle text-info me-2"></i>
+                                                    {{ note }}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-light">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                Kondisi lingkungan normal, tidak ada catatan khusus.
+                                            </div>
+                                        {% endif %}
+
+                                        <!-- Follow-up Advice -->
+                                        <div class="follow-up-advice mt-4">
+                                            <h6>
+                                                <i class="fas fa-forward me-2"></i> Saran Tindak Lanjut
+                                            </h6>
+                                            <div class="alert alert-light border-start border-3 border-primary">
+                                                <i class="fas fa-comment-medical me-2"></i>
+                                                {{ follow_up_advice }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Disclaimer -->
+                        <div class="disclaimer-section">
+                            <div class="alert alert-light border">
+                                <div class="d-flex">
+                                    <i class="fas fa-exclamation-circle text-warning fa-2x me-3"></i>
+                                    <div>
+                                        <strong>Disclaimer:</strong>
+                                        <small class="text-muted">
+                                            Rekomendasi ini berbasis prinsip Integrated Pest Management (IPM). 
+                                            Untuk kasus spesifik, konsultasikan dengan penyuluh pertanian setempat. 
+                                            Tidak disarankan penggunaan pestisida tanpa identifikasi yang tepat.
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -335,7 +546,6 @@
         </div>
     </section>
     {% endif %}
-
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
